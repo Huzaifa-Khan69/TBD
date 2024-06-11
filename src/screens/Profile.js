@@ -56,7 +56,7 @@ const dispatch=useDispatch()
         <Input placeholder={'Email'} inputStyle={{width: '90%'}} />
         <Input placeholder={'Name'} inputStyle={{width: '90%'}} />
         <Input placeholder={'Change Password'} inputStyle={{width: '90%'}} />
-        <Button text={'Logout'} buttonStyle={{marginTop: 18, width: '90%'}} />
+        <Button text={'Logout'} onPress={()=>navigation.navigate("SignIn")} buttonStyle={{marginTop: 18, width: '90%'}} />
       </View>
 
       <View

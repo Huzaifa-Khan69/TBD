@@ -7,7 +7,8 @@ import {
 } from 'react-native';
 import React from 'react';
 
-const Input = ({placeholder, inputStyle, icon, onPress,hidePass}) => {
+
+const Input = ({placeholder, inputStyle, icon, onPress,hidePass,setText,value}) => {
   return (
     <View>
       <TextInput
@@ -26,6 +27,8 @@ const Input = ({placeholder, inputStyle, icon, onPress,hidePass}) => {
         ]}
         placeholder={placeholder}
         secureTextEntry={hidePass ? true : false}
+        onChangeText={setText}
+        value={value}
       />
       <TouchableOpacity
         onPress={onPress}

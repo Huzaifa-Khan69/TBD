@@ -44,7 +44,7 @@ const Movies = ({navigation}) => {
 
   return (
     <View style={{flex: 1, backgroundColor: color.background}}>
-      <View style={{height: '100%', position: 'absolute'}}>
+      <View style={{height: '100%', position: 'absolute',width:"100%"}}>
         <Image
           source={images.movies}
           style={{height: '100%', width: '100%', position: 'absolute'}}
