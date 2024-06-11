@@ -1,31 +1,44 @@
-import {StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React from 'react';
 
-const Input = ({placeholder, inputStyle,icon}) => {
+const Input = ({placeholder, inputStyle, icon, onPress,hidePass}) => {
   return (
     <View>
-    <TextInput
-      style={[
-        {
-          width: '100%',
-          height: 55,
-          borderWidth: 1,
-          borderRadius: 10,
-          alignSelf: 'center',
-          backgroundColor: 'grey',
-          borderColor: 'grey',
-          marginTop:10,
-          paddingLeft:15,
-  
-        },
-        {inputStyle},
-      ]}
-      placeholder={placeholder}
-    />
-    <TouchableOpacity style={{position:'absolute',right:10,height:'100%',justifyContent:'center',marginTop:5}}>
+      <TextInput
+        style={[
+          {
+            width: '100%',
+            height: 60,
+            borderWidth: 1,
+            borderRadius: 10,
+            alignSelf: 'center',
+            borderColor: 'grey',
+            marginTop: 10,
+            paddingLeft: 15,
+          },
+          inputStyle,
+        ]}
+        placeholder={placeholder}
+        secureTextEntry={hidePass ? true : false}
+      />
+      <TouchableOpacity
+        onPress={onPress}
+        style={{
+          position: 'absolute',
+          right: 10,
+          height: '100%',
+          justifyContent: 'center',
+          marginTop: 5,
+        }}>
         {icon ? icon : null}
-        </TouchableOpacity>
-        </View>
+      </TouchableOpacity>
+    </View>
   );
 };
 

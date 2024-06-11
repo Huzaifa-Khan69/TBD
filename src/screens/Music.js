@@ -1,52 +1,48 @@
-import {
-  Image,
-  ScrollView,
-  StyleSheet,
-  Text,
-  View,
-  Dimensions,
-  ActivityIndicator,
-} from 'react-native';
-import React, {useState} from 'react';
+import {Dimensions, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import React from 'react';
 import images from '../assets/images';
 import Cart from '../components/Cart';
 import Button from '../components/Button';
 import color from '../theme/color';
 import Carousel from 'react-native-reanimated-carousel';
 
-const movie_img = [
-  {image: images.movie1},
-  {image: images.movie2},
-  {image: images.movie3},
-  
+const music_img = [
+  {
+    image: images.music1,
+  },
+  {
+    image: images.music2,
+  },
+  {
+    image: images.music3,
+  },
 ];
 const scroll = [
   {
-    image: images.movie4,
+    image: images.music4,
   },
   {
-    image: images.movie5,
+    image: images.music5,
   },
   {
-    image: images.movie6,
+    image: images.music6,
   },
   {
-    image: images.movie7,
+    image: images.music7,
   },
 ];
 
-const Movies = ({navigation}) => {
+const Music = ({navigation}) => {
   const {width} = Dimensions.get('window');
   const chunkedImages = [];
-  for (let i = 0; i < movie_img.length; i += 3) {
-    chunkedImages.push(movie_img.slice(i, i + 3));
+  for (let i = 0; i < music_img.length; i += 3) {
+    chunkedImages.push(music_img.slice(i, i + 3));
   }
-
   return (
     <View style={{flex: 1, backgroundColor: color.background}}>
-      <View style={{height: '100%', position: 'absolute'}}>
+      <View>
         <Image
-          source={images.movies}
+          source={images.music}
           style={{height: '100%', width: '100%', position: 'absolute'}}
         />
         <Text
@@ -54,23 +50,18 @@ const Movies = ({navigation}) => {
             fontSize: 25,
             justifyContent: 'center',
             width: '90%',
+            color: 'white',
             fontWeight: '900',
             alignSelf: 'center',
-            color: 'white',
             textAlign: 'center',
-            marginTop: '70%',
+            marginTop: '75%',
           }}>
-          Select your three favourite movies
+          Select your three favourite Music Artists
         </Text>
       </View>
       <View
-        style={{
-          height: '50%',
-          marginTop: '95%',
-          justifyContent: 'flex-end',
-          paddingLeft: 10,
-        }}>
-        <Carousel
+        style={{height: '50%', justifyContent: 'flex-end', paddingLeft: 10}}>
+       <Carousel
           style={{
             alignItems: 'center',
             justifyContent: 'center',
@@ -98,17 +89,19 @@ const Movies = ({navigation}) => {
             </View>
           )}
         />
-        <ScrollView horizontal={true} contentContainerStyle={{height: 125,marginTop:150}}>
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={{marginTop: 150, height: 125}}>
           {scroll.map(img => {
             return <Cart img={img.image} />;
           })}
         </ScrollView>
-        <Button text={'Next'} onPress={() => navigation.navigate('Comedian')} />
+        <Button text={'Next'} onPress={() => navigation.navigate('Shows')} />
       </View>
     </View>
   );
 };
 
-export default Movies;
+export default Music;
 
 const styles = StyleSheet.create({});

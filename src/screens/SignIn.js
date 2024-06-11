@@ -6,36 +6,29 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import React from 'react';
+import React, {useState} from 'react';
 import images from '../assets/images';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Foundation from 'react-native-vector-icons/Foundation';
-import Entypo from 'react-native-vector-icons/Entypo'
+import Entypo from 'react-native-vector-icons/Entypo';
+import color from '../theme/color';
 
-const SignIn = () => {
+const SignIn = ({navigation}) => {
+  const [hidepassword, setHidePassword] = useState(true);
   return (
-    <View style={{flex: 1, width: '100'}}>
-      <View style={{position: 'absolute', width: '100%'}}>
-        <Image source={images.background} style={{position: 'absolute'}} />
-        <Image
-          source={images.car}
-          style={{width: 360, height: 580, position: 'absolute'}}
-        />
-        <Image
-          source={images.girl}
-          style={{
-            // backgroundColor: 'red',
-            width: '95%',
-            height:550,
-            marginTop: 20,
-            marginLeft: 60,
-            resizeMode: 'contain',
-            position: 'absolute',
-          }}
-        />
-      </View>
-      <View style={{marginTop: '108%', width: '90%', alignSelf: 'center'}}>
+    <View style={{flex: 1}}>
+      <Image
+        source={images.login}
+        style={{width: '100%', height: '100%', position: 'absolute'}}
+      />
+      <View
+        style={{
+          justifyContent: 'flex-end',
+          height: '95%',
+          width: '90%',
+          alignSelf: 'center',
+        }}>
         <Text
           style={{
             fontSize: 29.5,
@@ -46,26 +39,37 @@ const SignIn = () => {
           Sign In with email or username
         </Text>
         <Input placeholder={'username or email'} />
-        <Input placeholder={'password'} icon={<Entypo name={"eye"} size={20}/>}/>
+        <Input
+          placeholder={'password'}
+          onPress={()=>setHidePassword(!hidepassword)}
+          hidePass={hidepassword}
+          icon={
+            <Entypo name={hidepassword ? 'eye-with-line' : 'eye'} size={20} />
+          }
+        />
         <TouchableOpacity style={{left: '65%', width: '40%'}}>
           <Text style={{color: 'white'}}>forget password?</Text>
         </TouchableOpacity>
-        <Button buttonStyle={{marginTop: 8}} text={'Sign Up'} />
+        <Button
+          buttonStyle={{marginTop: 15}}
+          text={'Sign In'}
+          onPress={() => navigation.navigate('Movies')}
+        />
         <View
           style={{
             flexDirection: 'row',
             alignItems: 'center',
             justifyContent: 'space-evenly',
-            marginTop: 10,
+            marginTop: 15,
           }}>
-          <TouchableOpacity>
-            <Image source={images.google} style={{width: 25, height: 25}} />
+          <TouchableOpacity onPress={() => navigation.navigate('Movies')}>
+            <Image source={images.google} style={{width: 20, height: 20}} />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Image source={images.facebook} style={{width: 25, height: 25}} />
+          <TouchableOpacity onPress={() => navigation.navigate('Movies')}>
+            <Image source={images.facebook} style={{width: 20, height: 20}} />
           </TouchableOpacity>
-          <TouchableOpacity>
-            <Foundation name={'social-apple'} size={35} />
+          <TouchableOpacity onPress={() => navigation.navigate('Movies')}>
+            <Foundation name={'social-apple'} size={30} />
           </TouchableOpacity>
         </View>
       </View>
