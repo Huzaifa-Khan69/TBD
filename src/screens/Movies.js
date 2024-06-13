@@ -7,44 +7,39 @@ import {
   Dimensions,
   ActivityIndicator,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import images from '../assets/images';
 import Cart from '../components/Cart';
 import Button from '../components/Button';
 import color from '../theme/color';
 import Carousel from 'react-native-reanimated-carousel';
-
-const movie_img = [
-  {image: images.movie1},
-  {image: images.movie2},
-  {image: images.movie3},
-  
-];
-const scroll = [
-  {
-    image: images.movie4,
-  },
-  {
-    image: images.movie5,
-  },
-  {
-    image: images.movie6,
-  },
-  {
-    image: images.movie7,
-  },
-];
+import axios from 'axios';
 
 const Movies = ({navigation}) => {
-  const {width} = Dimensions.get('window');
-  const chunkedImages = [];
-  for (let i = 0; i < movie_img.length; i += 3) {
-    chunkedImages.push(movie_img.slice(i, i + 3));
-  }
-
+  const [moviesdata, setMoviesData] = useState([]);
+  const getmovies = () => {
+    let config = {
+      method: 'get',
+      maxBodyLength: Infinity,
+      url: 'https://customdemo.website/apps/tbd/public/api/get-movie',
+    };
+    axios
+      .request(config)
+      .then(response => {
+        if (response.data.success == true) {
+          setMoviesData(response?.data?.data);
+        }
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
+  useEffect(() => {
+    getmovies();
+  }, []);
   return (
     <View style={{flex: 1, backgroundColor: color.background}}>
-      <View style={{height: '100%', position: 'absolute',width:"100%"}}>
+      <View style={{height: '100%', position: 'absolute', width: '100%'}}>
         <Image
           source={images.movies}
           style={{height: '100%', width: '100%', position: 'absolute'}}
@@ -70,37 +65,16 @@ const Movies = ({navigation}) => {
           justifyContent: 'flex-end',
           paddingLeft: 10,
         }}>
-        <Carousel
-          style={{
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-          loop
-          width={width}
-          height={width / 2}
-          autoPlay={true}
-          data={chunkedImages}
-          scrollAnimationDuration={1000}
-          renderItem={({item}) => (
-            <View style={{flexDirection:"row",}}>
-                {item.map((image, index) => (
-            <View
-              style={{
-                flex: 1,
-                justifyContent: 'center',
-                alignItems:"center",
-                // backgroundColor:"pink",
-                height: 130,
-              }}>
-                <Cart img={image.image} />
-                </View>
-              ))}
-            </View>
-          )}
-        />
-        <ScrollView horizontal={true} contentContainerStyle={{height: 125,marginTop:150}}>
-          {scroll.map(img => {
-            return <Cart img={img.image} />;
+        <ScrollView horizontal={true} contentContainerStyle={{height: 125}}>
+          {moviesdata.map((img, index) => {
+            return <Cart key={index} img={img.url} />;
+          })}
+        </ScrollView>
+        <ScrollView
+          horizontal={true}
+          contentContainerStyle={{height: 125, marginTop: 10}}>
+          {moviesdata.map((img,index) => {
+            return <Cart key={index} img={img.url} />;
           })}
         </ScrollView>
         <Button text={'Next'} onPress={() => navigation.navigate('Comedian')} />

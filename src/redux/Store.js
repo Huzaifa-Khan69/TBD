@@ -11,9 +11,11 @@ import {
 import persistStore from 'redux-persist/es/persistStore';
 import ColorSlice from './ColorSlice';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import AuthSlice from './AuthSlice';
 
 const reducers = combineReducers({
   option: ColorSlice,
+  auth:AuthSlice
 });
 
 const persistConfig = {key: 'root', storage: AsyncStorage, whitelist: ['auth']};

@@ -6,6 +6,7 @@ import Button from '../components/Button';
 import Entypo from 'react-native-vector-icons/Entypo';
 import color from '../theme/color';
 import axios from 'axios';
+import Toast from 'react-native-toast-message';
 
 const SignUp = ({navigation}) => {
   const [hidepassword, setHidePassword] = useState(true);
@@ -43,11 +44,11 @@ const SignUp = ({navigation}) => {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmit = () => {
+  const handleSignUp = async () => {
     let data = new FormData();
-    data.append('name',name);
+    data.append('name', name);
     data.append('email', email);
-    data.append('password',password);
+    data.append('password', password);
     data.append('confirm_password', confirmpassword);
     data.append('type', 'user');
 
@@ -59,20 +60,38 @@ const SignUp = ({navigation}) => {
         'Content-Type': 'multipart/form-data',
         // 'Authorization': `Bearer ${userToken}`,
         // ...data.getHeaders()
-    },
+      },
       data: data,
     };
-    axios
+    return await axios
       .request(config)
       .then(response => {
-        console.log('response>>>>>', response.data);
+        return response.data;
       })
       .catch(error => {
+        Toast.show({
+          type: 'error',
+          text1: error.message,
+        });
         console.log(error);
       });
-    if (validateForm()) {
+  };
+
+  const handleSubmit = async () => {
+    response = await handleSignUp();
+    console.log("response>>>>>>>",response)
+    if (validateForm() && response.success == true) {
       // Submit the form data
+      Toast.show({
+        type: 'success',
+        text1:response.message,
+      })
       navigation.navigate('SignIn');
+    } else {
+      Toast.show({
+        type: 'error',
+        text1: response.message,
+      });
     }
   };
 

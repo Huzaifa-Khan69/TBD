@@ -14,6 +14,7 @@ import Navigation from './src/routes/Navigation'
 import { Provider } from 'react-redux'
 import { PersistGate } from 'redux-persist/integration/react'
 import { persistor, store } from './src/redux/Store'
+import Toast from 'react-native-toast-message'
 
 
 const App = () => {
@@ -31,6 +32,7 @@ const App = () => {
     <Provider store={store}>
     <PersistGate loading={null} persistor={persistor}>
   <Navigation/>
+  <Toast/>
   </PersistGate>
   </Provider>
   )

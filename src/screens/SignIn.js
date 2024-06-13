@@ -14,12 +14,15 @@ import Foundation from 'react-native-vector-icons/Foundation';
 import Entypo from 'react-native-vector-icons/Entypo';
 import color from '../theme/color';
 import axios from 'axios';
+import {useDispatch} from 'react-redux';
+import {login} from '../redux/AuthSlice';
 
 const SignIn = ({navigation}) => {
   const [hidepassword, setHidePassword] = useState(true);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
+  const dispatch = useDispatch();
 
   const validateForm = () => {
     const errors = {};
@@ -43,22 +46,13 @@ const SignIn = ({navigation}) => {
       maxBodyLength: Infinity,
       url: 'https://customdemo.website/apps/tbd/public/api/login',
       headers: {
-       
         'Content-Type': 'multipart/form-data',
       },
       data: data,
     };
-    axios
-      .request(config)
-      .then(response => {
-        console.log("res>>>>",response.data);
-      })
-      .catch(error => {
-        console.log(error);
-      });
     if (validateForm()) {
       // Submit the form data
-      navigation.navigate('Movies');
+      dispatch(login(config));
     }
   };
 
