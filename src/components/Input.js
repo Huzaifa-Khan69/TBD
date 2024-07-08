@@ -19,6 +19,7 @@ const Input = ({placeholder, inputStyle, icon, onPress,hidePass,setText,value}) 
             borderWidth: 1,
             borderRadius: 10,
             alignSelf: 'center',
+            color:"white",
             borderColor: 'grey',
             marginTop: 10,
             paddingLeft: 15,
@@ -29,6 +30,7 @@ const Input = ({placeholder, inputStyle, icon, onPress,hidePass,setText,value}) 
         secureTextEntry={hidePass ? true : false}
         onChangeText={setText}
         value={value}
+        placeholderTextColor="white"
       />
       <TouchableOpacity
         onPress={onPress}

@@ -15,6 +15,7 @@ import Toast from 'react-native-toast-message';
 
 const Profile = ({navigation}) => {
   const dispatch = useDispatch();
+  const {profile}=useSelector(state=>state.Data.option)
   const {token} = useSelector(state => state.Data.auth);
   const [currentpassword, setCurrentPassword] = useState();
   const [newpassword, setNewPassword] = useState();
@@ -54,6 +55,17 @@ const Profile = ({navigation}) => {
         console.log(error);
       });
   };
+  const Signout = config => {
+    axios
+      .request(config)
+      .then(response => {
+        console.log(JSON.stringify(response.data));
+        dispatch(Logout());
+      })
+      .catch(error => {
+        console.log(error);
+      });
+  };
   const handleSignout = () => {
     let config = {
       method: 'get',
@@ -61,18 +73,16 @@ const Profile = ({navigation}) => {
       url: 'https://customdemo.website/apps/tbd/public/api/logout',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
       },
     };
-    axios
-      .request(config)
-      .then(response => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    dispatch(Logout());
+    Alert.alert('Logout', 'Are you Sure', [
+      {
+        text: 'Cancel',
+        onPress: () => navigation.navigate('Profile'),
+        style: 'cancel',
+      },
+      {text: 'OK', onPress: () => Signout(config)},
+    ]);
   };
   return (
     <ScrollView
@@ -117,7 +127,7 @@ const Profile = ({navigation}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image source={images.profile} />
+        <Image source={profile} />
       </View>
       <View style={{width: '90%', alignSelf: 'center'}}>
         <Input

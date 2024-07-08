@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -16,6 +17,19 @@ import axios from 'axios';
 
 const Shows = ({navigation}) => {
   const [showsdata, setShowData] = useState([]);
+  const [selectfavShows, setSelectedFavShows] = useState([]);
+  const [isLoading,setIsLoading]=useState(true)
+
+  const toggleImageSelection = imageId => {
+    if (selectfavShows.includes(imageId)) {
+      setSelectedFavShows(selectfavShows.filter(id => id !== imageId));
+    } else {
+      if (selectfavShows.length < 3) {
+        setSelectedFavShows([...selectfavShows, imageId]);
+      }
+    }
+  };
+
   const getShows = () => {
     let config = {
       method: 'get',
@@ -25,8 +39,10 @@ const Shows = ({navigation}) => {
     axios
       .request(config)
       .then(response => {
+        setIsLoading(true)
         if (response.data.success == true) {
           setShowData(response?.data.data);
+          setIsLoading(false)
         }
       })
       .catch(error => {
@@ -60,22 +76,25 @@ const Shows = ({navigation}) => {
       <View
         style={{
           height: '50%',
-          marginTop: '95%',
+          marginTop: '80%',
           justifyContent: 'flex-end',
-          paddingLeft: 10,
+          
         }}>
-        <ScrollView horizontal={true} contentContainerStyle={{height: 125}}>
-          {showsdata.map((img,index) => {
-            return <Cart img={img.url} key={index} />;
-          })}
-        </ScrollView>
+          {isLoading?<ActivityIndicator size={"large"}/>:
         <ScrollView
           horizontal={true}
-          contentContainerStyle={{marginTop: 10, height: 125}}>
-          {showsdata.map((img,index) => {
-            return <Cart img={img.url} key={index} />;
+          contentContainerStyle={{marginTop: 120, height: 150}}>
+          {showsdata.map((img, index) => {
+            return (
+              <Cart
+                img={img.url}
+                key={index}
+                selectedItem={selectfavShows.includes(img.id)}
+                onPress={() => toggleImageSelection(img.id)}
+              />
+            );
           })}
-        </ScrollView>
+        </ScrollView>}
         <Button text={'Next'} onPress={() => navigation.navigate('Home')} />
       </View>
     </View>
