@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -16,6 +17,19 @@ import axios from 'axios';
 
 const Comedian = ({navigation}) => {
   const [comediandata, setComedianData] = useState([]);
+  const [selectfavComedian, setSelectedFavComedian] = useState([]);
+  const [isLoading,setIsLoading]=useState(true)
+
+  const toggleImageSelection = imageId => {
+    if (selectfavComedian.includes(imageId)) {
+      setSelectedFavComedian(selectfavComedian.filter(id => id !== imageId));
+    } else {
+      if (selectfavComedian.length < 3) {
+        setSelectedFavComedian([...selectfavComedian, imageId]);
+      }
+    }
+  };
+
   const getcomedian = () => {
     let config = {
       method: 'get',
@@ -25,8 +39,10 @@ const Comedian = ({navigation}) => {
     axios
       .request(config)
       .then(response => {
+        setIsLoading(true)
         if (response.data.success == true) {
           setComedianData(response?.data);
+          setIsLoading(false)
         }
       })
       .catch(error => {
@@ -65,22 +81,26 @@ const Comedian = ({navigation}) => {
       <View
         style={{
           height: '50%',
-          marginTop: '95%',
+          marginTop: '80%',
           justifyContent: 'flex-end',
-          paddingLeft: 10,
+          // backgroundColor:"pink"
         }}>
-        <ScrollView horizontal={true} contentContainerStyle={{height: 125}}>
-          {comediandata.data?.map((img,index) => {
-            return <Cart key={index} img={comediandata.path + '/' + img.image} />;
-          })}
-        </ScrollView>
+          {isLoading?<ActivityIndicator size={"large"}/>:
         <ScrollView
           horizontal={true}
-          contentContainerStyle={{marginTop: 10, height: 125}}>
-          {comediandata.data?.map((img,index) => {
-            return <Cart key={index} img={comediandata.path + '/' + img.image} />;
+          contentContainerStyle={{height: 150, marginTop: 90}}>
+          {comediandata.data?.map((img, index) => {
+            return (
+              <Cart
+                key={index}
+                img={comediandata.path + '/' + img.image}
+                selectedItem={selectfavComedian.includes(img.id)}
+                onPress={() => toggleImageSelection(img.id)}
+              />
+            );
           })}
         </ScrollView>
+}
         <Button text={'Next'} onPress={() => navigation.navigate('Music')} />
       </View>
     </View>

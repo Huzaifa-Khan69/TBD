@@ -15,9 +15,6 @@ import AntDesign from 'react-native-vector-icons/AntDesign';
 import images from '../assets/images';
 import Feather from 'react-native-vector-icons/Feather';
 import Bottom from '../components/Bottom';
-import Foundation from 'react-native-vector-icons/Foundation';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { useDispatch } from 'react-redux';
 import { selectOption } from '../redux/ColorSlice';
 const AskAnything = ({navigation}) => {
@@ -30,6 +27,8 @@ const AskAnything = ({navigation}) => {
         style={{position: 'absolute', width: 400}}
       />
       <Header
+      onPress1={()=>{navigation.navigate("Profile"),dispatch(selectOption(2))}}
+      onPress2={()=>navigation.navigate("AskAnything")}
         icon1={<Ionicons name={'settings-outline'} size={25} />}
         text={'Home'}
         icon2={<AntDesign name={'message1'} size={25} />}

@@ -22,6 +22,8 @@ const Home = ({navigation}) => {
         style={{position: 'absolute', width: 400}}
       />
       <Header
+      onPress1={()=>{navigation.navigate("Profile"),dispatch(selectOption(2))}}
+      onPress2={()=>navigation.navigate("AskAnything")}
         icon1={<Ionicons name={'settings-outline'} size={25} />}
         text={'Home'}
         icon2={<AntDesign name={'message1'} size={25} />}

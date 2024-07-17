@@ -1,7 +1,7 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import React from 'react';
 
-const Header = ({icon1, text, icon2}) => {
+const Header = ({icon1, text, icon2,onPress1,onPress2}) => {
   return (
     <View
       style={{
@@ -12,13 +12,13 @@ const Header = ({icon1, text, icon2}) => {
         alignSelf:"center",
         marginVertical:15
       }}>
-        <View>
+        <TouchableOpacity onPress={onPress1}>
       {icon1 ? icon1 : null}
-      </View>
+      </TouchableOpacity>
       <Text style={{fontSize:25,fontWeight:"600",color:"white"}}>{text}</Text>
-      <View>
+      <TouchableOpacity onPress={onPress2}>
       {icon2 ? icon2 : null}
-      </View>
+      </TouchableOpacity>
     </View>
   );
 };

@@ -1,4 +1,5 @@
 import {
+  ActivityIndicator,
   Dimensions,
   Image,
   ScrollView,
@@ -16,6 +17,21 @@ import axios from 'axios';
 
 const Music = ({navigation}) => {
   const [musicdata, setMusicData] = useState([]);
+  const [selectfavMusicArtist, setSelectedFavMusicArtist] = useState([]);
+  const [isLoading,setIsLoading]=useState(true)
+
+  const toggleImageSelection = imageId => {
+    if (selectfavMusicArtist.includes(imageId)) {
+      setSelectedFavMusicArtist(
+        selectfavMusicArtist.filter(id => id !== imageId),
+      );
+    } else {
+      if (selectfavMusicArtist.length < 3) {
+        setSelectedFavMusicArtist([...selectfavMusicArtist, imageId]);
+      }
+    }
+  };
+
   const getmusic = () => {
     let config = {
       method: 'get',
@@ -25,8 +41,10 @@ const Music = ({navigation}) => {
     axios
       .request(config)
       .then(response => {
+        setIsLoading(true)
         if (response.data.success == true) {
           setMusicData(response?.data);
+          setIsLoading(false)
         }
       })
       .catch(error => {
@@ -38,7 +56,7 @@ const Music = ({navigation}) => {
   }, []);
   return (
     <View style={{flex: 1, backgroundColor: color.background}}>
-      <View>
+      <View style={{height: '60%', position: 'absolute', width: '100%'}}>
         <Image
           source={images.music}
           style={{height: '100%', width: '100%', position: 'absolute'}}
@@ -58,19 +76,22 @@ const Music = ({navigation}) => {
         </Text>
       </View>
       <View
-        style={{height: '50%', justifyContent: 'flex-end', paddingLeft: 10}}>
-        <ScrollView horizontal={true} contentContainerStyle={{height: 125}}>
-          {musicdata.data?.map((img,index) => {
-            return <Cart key={index} img={musicdata.path + '/' + img.image} />;
-          })}
-        </ScrollView>
+        style={{height: '50%',marginTop: '82%', justifyContent: 'flex-end'}}>
+          {isLoading?<ActivityIndicator size={"large"}/>:
         <ScrollView
           horizontal={true}
-          contentContainerStyle={{marginTop: 10, height: 125}}>
-          {musicdata.data?.map((img,index) => {
-            return <Cart key={index} img={musicdata.path + '/' + img.image} />;
+          contentContainerStyle={{marginTop: 75, height: 150}}>
+          {musicdata.data?.map((img, index) => {
+            return (
+              <Cart
+                key={index}
+                img={musicdata.path + '/' + img.image}
+                selectedItem={selectfavMusicArtist.includes(img.id)}
+                onPress={() => toggleImageSelection(img.id)}
+              />
+            );
           })}
-        </ScrollView>
+        </ScrollView>}
         <Button text={'Next'} onPress={() => navigation.navigate('Shows')} />
       </View>
     </View>

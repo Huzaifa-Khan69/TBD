@@ -1,4 +1,12 @@
-import {Alert, Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  Alert,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
 import Header from '../components/Header';
 import Ionicons from 'react-native-vector-icons/Ionicons';
@@ -12,13 +20,18 @@ import {selectOption} from '../redux/ColorSlice';
 import axios from 'axios';
 import {Logout} from '../redux/AuthSlice';
 import Toast from 'react-native-toast-message';
+import auth from '@react-native-firebase/auth';
 
 const Profile = ({navigation}) => {
   const dispatch = useDispatch();
+  const {profile} = useSelector(state => state.Data.option);
   const {token} = useSelector(state => state.Data.auth);
   const [currentpassword, setCurrentPassword] = useState();
   const [newpassword, setNewPassword] = useState();
   const [confirmnewpassword, setConfirmNewPassword] = useState();
+  const {isLoggedInWithGoogle, isLoggedInWithFacebook} = useSelector(
+    state => state.Data.auth,
+  );
 
   const changepassword = () => {
     let data = new FormData();
@@ -36,6 +49,21 @@ const Profile = ({navigation}) => {
       },
       data: data,
     };
+    if(isLoggedInWithGoogle){
+      Toast.show({
+        type: 'error',
+        text1: 'Cannot Change Password',
+        text2: 'You are loggedIn from google'
+      });
+    }
+    else if(isLoggedInWithFacebook){
+      Toast.show({
+        type: 'error',
+        text1: 'Cannot Change Password',
+        text2: 'You are loggedIn with facebook'
+      });
+    }
+    else{
     axios
       .request(config)
       .then(response => {
@@ -53,7 +81,46 @@ const Profile = ({navigation}) => {
       .catch(error => {
         console.log(error);
       });
+    }
   };
+  const Signout = async config => {
+    if (isLoggedInWithGoogle) {
+      await auth().signOut();
+    } else if (isLoggedInWithFacebook) {
+      await auth().signOut();
+    } else if (token && !isLoggedInWithGoogle&& !isLoggedInWithFacebook) {
+      await axios
+        .request(config)
+        .then(response => {
+          console.log(JSON.stringify(response.data));
+        })
+        .catch(error => {
+          console.log(error);
+        });
+    }
+    dispatch(Logout());
+  };
+  const changePicture = () => {
+    Alert.alert(
+      'Change Profile Picture',
+      'Do you Want to change the Profile Picture',
+      [
+        {
+          text: 'No',
+          onPress: () => navigation.navigate('Profile'),
+          style: 'cancel',
+        },
+        {
+          text: 'Yes',
+          onPress: () => [
+            navigation.navigate('Explore'),
+            dispatch(selectOption(1)),
+          ],
+        },
+      ],
+    );
+  };
+
   const handleSignout = () => {
     let config = {
       method: 'get',
@@ -61,18 +128,16 @@ const Profile = ({navigation}) => {
       url: 'https://customdemo.website/apps/tbd/public/api/logout',
       headers: {
         Authorization: `Bearer ${token}`,
-        'Content-Type': 'multipart/form-data',
       },
     };
-    axios
-      .request(config)
-      .then(response => {
-        console.log(JSON.stringify(response.data));
-      })
-      .catch(error => {
-        console.log(error);
-      });
-    dispatch(Logout());
+    Alert.alert('Logout', 'Are you Sure', [
+      {
+        text: 'Cancel',
+        onPress: () => navigation.navigate('Profile'),
+        style: 'cancel',
+      },
+      {text: 'Logout', onPress: () => Signout(config)},
+    ]);
   };
   return (
     <ScrollView
@@ -82,6 +147,9 @@ const Profile = ({navigation}) => {
         backgroundColor: color.background,
       }}>
       <Header
+        onPress1={() => {
+          navigation.navigate('Profile'), dispatch(selectOption(2));
+        }}
         icon1={<Ionicons name={'settings-outline'} size={25} />}
         text={'Profile'}
       />
@@ -106,7 +174,8 @@ const Profile = ({navigation}) => {
           marginTop: 400,
         }}
       />
-      <View
+      <TouchableOpacity
+        onPress={() => changePicture()}
         style={{
           width: 210,
           height: 210,
@@ -117,8 +186,8 @@ const Profile = ({navigation}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image source={images.profile} />
-      </View>
+        <Image source={profile} />
+      </TouchableOpacity>
       <View style={{width: '90%', alignSelf: 'center'}}>
         <Input
           placeholder={'Current Password'}

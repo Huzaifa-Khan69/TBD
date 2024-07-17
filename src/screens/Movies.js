@@ -12,11 +12,23 @@ import images from '../assets/images';
 import Cart from '../components/Cart';
 import Button from '../components/Button';
 import color from '../theme/color';
-import Carousel from 'react-native-reanimated-carousel';
 import axios from 'axios';
 
 const Movies = ({navigation}) => {
   const [moviesdata, setMoviesData] = useState([]);
+  const [selectfavMovies, setSelectedFavMovies] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const toggleImageSelection = imageId => {
+    if (selectfavMovies.includes(imageId)) {
+      setSelectedFavMovies(selectfavMovies.filter(id => id !== imageId));
+    } else {
+      if (selectfavMovies.length < 3) {
+        setSelectedFavMovies([...selectfavMovies, imageId]);
+      }
+    }
+  };
+
   const getmovies = () => {
     let config = {
       method: 'get',
@@ -26,8 +38,10 @@ const Movies = ({navigation}) => {
     axios
       .request(config)
       .then(response => {
+        setIsLoading(true);
         if (response.data.success == true) {
           setMoviesData(response?.data?.data);
+          setIsLoading(false);
         }
       })
       .catch(error => {
@@ -61,22 +75,28 @@ const Movies = ({navigation}) => {
       <View
         style={{
           height: '50%',
-          marginTop: '95%',
+          marginTop: '85%',
           justifyContent: 'flex-end',
-          paddingLeft: 10,
         }}>
-        <ScrollView horizontal={true} contentContainerStyle={{height: 125}}>
-          {moviesdata.map((img, index) => {
-            return <Cart key={index} img={img.url} />;
-          })}
-        </ScrollView>
-        <ScrollView
-          horizontal={true}
-          contentContainerStyle={{height: 125, marginTop: 10}}>
-          {moviesdata.map((img,index) => {
-            return <Cart key={index} img={img.url} />;
-          })}
-        </ScrollView>
+        {isLoading ? (
+          <ActivityIndicator size="large" />
+        ) : (
+          <ScrollView
+            horizontal={true}
+            contentContainerStyle={{height: 150, marginTop: 80}}>
+            {moviesdata.map((img, index) => {
+              <ActivityIndicator/>
+              return (
+                <Cart
+                  key={index}
+                  img={img.url}
+                  selectedItem={selectfavMovies.includes(img.id)}
+                  onPress={() => toggleImageSelection(img.id)}
+                />
+              );
+            })}
+          </ScrollView>
+        )}
         <Button text={'Next'} onPress={() => navigation.navigate('Comedian')} />
       </View>
     </View>

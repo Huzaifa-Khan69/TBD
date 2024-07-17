@@ -1,6 +1,7 @@
+import { ImageBase } from 'react-native'
 
 
-export default {
+export default Images= {
   car: require('./car.png'),
   girl: require('./girl.png'),
   girlwithmask: require('./taylorswift.png'),

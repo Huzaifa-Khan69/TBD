@@ -1,21 +1,15 @@
-import {
-  Image,
-  StyleSheet,
-  Text,
-  Touchable,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
+import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, {useEffect, useState} from 'react';
 import images from '../assets/images';
 import Input from '../components/Input';
 import Button from '../components/Button';
 import Foundation from 'react-native-vector-icons/Foundation';
 import Entypo from 'react-native-vector-icons/Entypo';
-import color from '../theme/color';
-import axios from 'axios';
-import {useDispatch} from 'react-redux';
-import {login} from '../redux/AuthSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import {login, setData, setToken, setcat} from '../redux/AuthSlice';
+import {GoogleSignin} from '@react-native-google-signin/google-signin';
+import {LoginManager, AccessToken} from 'react-native-fbsdk-next';
+import auth from '@react-native-firebase/auth';
 
 const SignIn = ({navigation}) => {
   const [hidepassword, setHidePassword] = useState(true);
@@ -23,6 +17,54 @@ const SignIn = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [errors, setErrors] = useState({});
   const dispatch = useDispatch();
+
+  useEffect(() => {
+    GoogleSignin.configure({
+      webClientId:
+        '38449324733-shung2ispulai3bal8l9pro6sl6rhqol.apps.googleusercontent.com',
+    });
+  });
+
+  const facebookLogin = async () => {
+    const result = await LoginManager.logInWithPermissions(['public_profile']);
+
+    if (result.isCancelled) {
+      throw 'User cancelled the login process';
+    }
+
+    // Once signed in, get the users AccessToken
+    const data = await AccessToken.getCurrentAccessToken();
+    // console.log(data);
+    dispatch(setToken(data))
+
+    if (!data) {
+      throw 'Something went wrong obtaining access token';
+    }
+    // Create a Firebase credential with the AccessToken
+    const facebookCredential = auth.FacebookAuthProvider.credential(
+      data.accessToken,
+    );
+   
+    // Sign-in the user with the credential
+    const fab=await auth().signInWithCredential(facebookCredential);
+    dispatch(setData(fab.user))
+    
+  };
+
+  const googleSignIn = async () => {
+    await GoogleSignin.signOut();
+    await GoogleSignin.hasPlayServices({showPlayServicesUpdateDialog: true});
+    // Get the users ID token
+    const {idToken, user} = await GoogleSignin.signIn();
+    // Create a Google credential with the token
+    const googleCredential = auth.GoogleAuthProvider.credential(idToken);
+
+    // Sign-in the user with the credential
+    dispatch(setToken(idToken));
+    dispatch(setData(user));
+    const user_data = await auth()?.signInWithCredential(googleCredential);
+   
+  };
 
   const validateForm = () => {
     const errors = {};
@@ -126,14 +168,33 @@ const SignIn = ({navigation}) => {
             justifyContent: 'space-evenly',
             marginTop: 15,
           }}>
-          <TouchableOpacity onPress={() => navigation.navigate('Movies')}>
+          <TouchableOpacity onPress={() => googleSignIn()}>
             <Image source={images.google} style={{width: 20, height: 20}} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Movies')}>
+          <TouchableOpacity onPress={() => facebookLogin()}>
             <Image source={images.facebook} style={{width: 20, height: 20}} />
           </TouchableOpacity>
-          <TouchableOpacity onPress={() => navigation.navigate('Movies')}>
+          <TouchableOpacity>
             <Foundation name={'social-apple'} size={30} />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            flexDirection: 'row',
+            justifyContent: 'center',
+            alignItems: 'center',
+            marginTop: 15,
+          }}>
+          <Text style={{fontSize: 18, textAlign: 'center'}}>
+            Don't have an Account?
+          </Text>
+          <TouchableOpacity
+            onPress={() => navigation.navigate('SignUp')}
+            style={{
+              borderRadius: 10,
+              paddingHorizontal: 5,
+            }}>
+            <Text style={{fontSize: 17}}>SignUp</Text>
           </TouchableOpacity>
         </View>
       </View>

@@ -1,4 +1,12 @@
-import {Image, ScrollView, StyleSheet, Text, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import React, {useState} from 'react';
 import images from '../assets/images';
 import Input from '../components/Input';
@@ -16,6 +24,7 @@ const SignUp = ({navigation}) => {
   const [password, setPassword] = useState('');
   const [confirmpassword, setConfirmpassword] = useState('');
   const [errors, setErrors] = useState({});
+  const [isLoading,setIsLaoding]=useState(false)
 
   const validateForm = () => {
     const errors = {};
@@ -71,22 +80,24 @@ const SignUp = ({navigation}) => {
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: error.message,
+          text1: 'Something Went Wrong',
         });
         console.log(error);
       });
   };
 
   const handleSubmit = async () => {
+    setIsLaoding(true)
     response = await handleSignUp();
-    console.log("response>>>>>>>",response)
+    console.log('response>>>>>>>', response);
     if (validateForm() && response.success == true) {
       // Submit the form data
       Toast.show({
         type: 'success',
-        text1:response.message,
-      })
+        text1: response.message,
+      });
       navigation.navigate('SignIn');
+      setIsLaoding(false)
     } else {
       Toast.show({
         type: 'error',
@@ -101,7 +112,7 @@ const SignUp = ({navigation}) => {
         source={images.signup}
         style={{position: 'absolute', height: '100%', width: '100%'}}
       />
-
+      {isLoading?<ActivityIndicator size={"large"}/>:null}
       <View style={{marginTop: '75%', width: '90%', alignSelf: 'center'}}>
         <Text
           style={{
@@ -175,6 +186,26 @@ const SignUp = ({navigation}) => {
           text={'Sign Up'}
           onPress={handleSubmit}
         />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          alignItems: 'center',
+          marginTop: 15,
+          marginBottom:50
+        }}>
+        <Text style={{fontSize: 18, textAlign: 'center'}}>
+          Already have an Account?
+        </Text>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('SignIn')}
+          style={{
+            borderRadius: 10,
+            paddingHorizontal: 5,
+          }}>
+          <Text style={{fontSize: 18}}>Login</Text>
+        </TouchableOpacity>
       </View>
       <Image
         source={images.boy}

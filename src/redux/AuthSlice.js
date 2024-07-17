@@ -6,13 +6,15 @@ export const login = createAsyncThunk('auth/login', async config => {
   return await axios
     .request(config)
     .then(response => {
-        response.data.success === true?Toast.show({
+      response.data.success === true
+        ? Toast.show({
             type: 'success',
-            text1:"Login Successfully",
-          }):Toast.show({
-            type: 'error',
-            text1: "Email or Password Is Incorrect",
+            text1: 'Login Successfully',
           })
+        : Toast.show({
+            type: 'error',
+            text1: 'Email or Password Is Incorrect',
+          });
       return response.data;
     })
     .catch(error => {
@@ -31,13 +33,34 @@ const AuthSlice = createSlice({
     loading: false,
     data: null,
     token: '',
+    isLoggedInWithGoogle: false,
+    isLoggedInWithFacebook: false,
   },
   reducers: {
+    setToken(state, action) {
+      if (action.payload.accessTokenSource === 'FACEBOOK_APPLICATION_WEB') {
+        state.token = action.payload.accessToken;
+        state.userloggedIn =
+          action.payload.accessToken.trim().length > 0 ? true : false;
+        state.isLoggedInWithFacebook =
+          action.payload.accessToken.trim().length > 0 ? true : false;
+      } else {
+        state.token = action.payload;
+        state.userloggedIn = action.payload.trim().length > 0 ? true : false;
+        state.isLoggedInWithGoogle =
+          action.payload.trim().length > 0 ? true : false;
+      }
+    },
+    setData(state, action) {
+      state.data = action.payload;
+    },
     Logout(state) {
       state.userloggedIn = false;
       state.loading = false;
       state.data = {};
       state.token = '';
+      state.isLoggedInWithGoogle = false;
+      state.isLoggedInWithFacebook=false
     },
   },
   extraReducers: builder => {
@@ -46,10 +69,6 @@ const AuthSlice = createSlice({
     });
     builder.addCase(login.fulfilled, (state, action) => {
       console.log('data>>', action.payload);
-      console.log(
-        'jkdshkjaghkgktg==========>   ',
-        action.payload.token.trim().length,
-      );
       state.loading = false;
       state.userloggedIn =
         action.payload.token.trim().length > 0 ? true : false;
@@ -61,5 +80,5 @@ const AuthSlice = createSlice({
     });
   },
 });
-export const {Logout} = AuthSlice.actions;
+export const {Logout, setToken, setData} = AuthSlice.actions;
 export default AuthSlice.reducer;
