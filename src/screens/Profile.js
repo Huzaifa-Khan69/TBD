@@ -24,7 +24,6 @@ import auth from '@react-native-firebase/auth';
 
 const Profile = ({navigation}) => {
   const dispatch = useDispatch();
-  const {profile} = useSelector(state => state.Data.option);
   const {token} = useSelector(state => state.Data.auth);
   const [currentpassword, setCurrentPassword] = useState();
   const [newpassword, setNewPassword] = useState();
@@ -83,44 +82,6 @@ const Profile = ({navigation}) => {
       });
     }
   };
-  const Signout = async config => {
-    if (isLoggedInWithGoogle) {
-      await auth().signOut();
-    } else if (isLoggedInWithFacebook) {
-      await auth().signOut();
-    } else if (token && !isLoggedInWithGoogle&& !isLoggedInWithFacebook) {
-      await axios
-        .request(config)
-        .then(response => {
-          console.log(JSON.stringify(response.data));
-        })
-        .catch(error => {
-          console.log(error);
-        });
-    }
-    dispatch(Logout());
-  };
-  const changePicture = () => {
-    Alert.alert(
-      'Change Profile Picture',
-      'Do you Want to change the Profile Picture',
-      [
-        {
-          text: 'No',
-          onPress: () => navigation.navigate('Profile'),
-          style: 'cancel',
-        },
-        {
-          text: 'Yes',
-          onPress: () => [
-            navigation.navigate('Explore'),
-            dispatch(selectOption(1)),
-          ],
-        },
-      ],
-    );
-  };
-
   const handleSignout = () => {
     let config = {
       method: 'get',
@@ -128,16 +89,18 @@ const Profile = ({navigation}) => {
       url: 'https://customdemo.website/apps/tbd/public/api/logout',
       headers: {
         Authorization: `Bearer ${token}`,
+        'Content-Type': 'multipart/form-data',
       },
     };
-    Alert.alert('Logout', 'Are you Sure', [
-      {
-        text: 'Cancel',
-        onPress: () => navigation.navigate('Profile'),
-        style: 'cancel',
-      },
-      {text: 'Logout', onPress: () => Signout(config)},
-    ]);
+    axios
+      .request(config)
+      .then(response => {
+        console.log(JSON.stringify(response.data));
+      })
+      .catch(error => {
+        console.log(error);
+      });
+    dispatch(Logout());
   };
   return (
     <ScrollView
@@ -186,8 +149,8 @@ const Profile = ({navigation}) => {
           justifyContent: 'center',
           alignItems: 'center',
         }}>
-        <Image source={profile} />
-      </TouchableOpacity>
+        <Image source={images.profile} />
+      </View>
       <View style={{width: '90%', alignSelf: 'center'}}>
         <Input
           placeholder={'Current Password'}

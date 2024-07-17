@@ -1,59 +1,19 @@
-import {
-  Alert,
-  Image,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import React, {useState} from 'react';
-import Header from '../components/Header';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import AntDesign from 'react-native-vector-icons/AntDesign';
-import color from '../theme/color';
-import images from '../assets/images';
-import Bottom from '../components/Bottom';
-import {useDispatch} from 'react-redux';
-import {profilePicture, selectOption} from '../redux/ColorSlice';
-import Avatar from '../components/Avatar';
+import { Image, StyleSheet, Text, View } from 'react-native'
+import React, { useState } from 'react'
+import Header from '../components/Header'
+import Ionicons from 'react-native-vector-icons/Ionicons'
+import AntDesign from 'react-native-vector-icons/AntDesign'
+import color from '../theme/color'
+import images from '../assets/images'
+import Foundation from 'react-native-vector-icons/Foundation'
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
+import FontAwesome from 'react-native-vector-icons/FontAwesome'
+import Bottom from '../components/Bottom'
+import { useDispatch } from 'react-redux'
+import { selectOption } from '../redux/ColorSlice'
 
-const avatar_images = [
-  {
-    img: require('../assets/images/avatar1.png'),
-    id: 1,
-  },
-  {
-    img: images.profile,
-    id: 2,
-  },
-  {
-    img: images.avatar3,
-    id: 3,
-  },
-  {
-    img: images.avatar4,
-    id: 4,
-  },
-  {
-    img: images.avatar5,
-    id: 5,
-  },
-  {
-    img: images.avatar6,
-    id: 6,
-  },
-];
 const Explore = ({navigation}) => {
-  const dispatch = useDispatch();
-  const setProfilePicture = img => {
-    Alert.alert('Change Profile Picture', 'Set This As Your Profile Picture', [
-      {
-        text: 'Cancel',
-        onPress: () => navigation.navigate('Explore'),
-      },
-      {text: 'Yes', onPress: () => dispatch(profilePicture(img))},
-    ]);
-  };
+  const dispatch=useDispatch()
   return (
     <View style={{flex: 1, backgroundColor: color.background}}>
       <Header
@@ -103,26 +63,21 @@ const Explore = ({navigation}) => {
           borderRadius: 80,
           backgroundColor: '#7F3DC1',
           marginTop: 500,
-        }}
-      />
-      <View style={{width: '90%', alignSelf: 'center'}}>
-        <Text style={{color: 'white', fontSize: 25}}>
-          Select Your Character
-        </Text>
-        <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-          {avatar_images.map((eachObject, index) => {
-            console.log(eachObject);
-            return (
-              <Avatar
-                key={index} // Providing a unique key
-                img={eachObject.img}
-                onPress={() => setProfilePicture(eachObject.img)} // Wrap setProfilePicture in an arrow function to prevent immediate invocation
-              />
-            );
-          })}
+        }}/>
+        <View style={{width:"90%",alignSelf:"center"}}>
+            <Text style={{color:"white",fontSize:25}}>
+                Select Your Character
+            </Text>
+            <View style={{  flexWrap:"wrap",flexDirection:"row"}}>
+            <Image source={images.avatar1} style={{width:"50%"}}/>
+            <Image source={images.profile} style={{width:"50%"}}/>
+            <Image source={images.avatar3} style={{width:"50%"}}/>
+            <Image source={images.avatar4} style={{width:"50%"}}/>
+            <Image source={images.avatar5} style={{width:"50%"}}/>
+            <Image source={images.avatar6} style={{width:"50%"}}/>
+            </View>
         </View>
-      </View>
-      <View
+        <View
         style={{
           width: '100%',
           height: '12%',

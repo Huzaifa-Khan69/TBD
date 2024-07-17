@@ -76,20 +76,17 @@ const Music = ({navigation}) => {
         </Text>
       </View>
       <View
-        style={{height: '50%',marginTop: '82%', justifyContent: 'flex-end'}}>
-          {isLoading?<ActivityIndicator size={"large"}/>:
+        style={{height: '50%', justifyContent: 'flex-end', paddingLeft: 10}}>
+        <ScrollView horizontal={true} contentContainerStyle={{height: 125}}>
+          {musicdata.data?.map((img,index) => {
+            return <Cart key={index} img={musicdata.path + '/' + img.image} />;
+          })}
+        </ScrollView>
         <ScrollView
           horizontal={true}
-          contentContainerStyle={{marginTop: 75, height: 150}}>
-          {musicdata.data?.map((img, index) => {
-            return (
-              <Cart
-                key={index}
-                img={musicdata.path + '/' + img.image}
-                selectedItem={selectfavMusicArtist.includes(img.id)}
-                onPress={() => toggleImageSelection(img.id)}
-              />
-            );
+          contentContainerStyle={{marginTop: 10, height: 125}}>
+          {musicdata.data?.map((img,index) => {
+            return <Cart key={index} img={musicdata.path + '/' + img.image} />;
           })}
         </ScrollView>}
         <Button text={'Next'} onPress={() => navigation.navigate('Shows')} />

@@ -67,8 +67,7 @@ const SignUp = ({navigation}) => {
       url: 'https://customdemo.website/apps/tbd/public/api/register',
       headers: {
         'Content-Type': 'multipart/form-data',
-        // 'Authorization': `Bearer ${userToken}`,
-        // ...data.getHeaders()
+     
       },
       data: data,
     };
@@ -80,7 +79,7 @@ const SignUp = ({navigation}) => {
       .catch(error => {
         Toast.show({
           type: 'error',
-          text1: 'Something Went Wrong',
+          text1: error.message,
         });
         console.log(error);
       });
@@ -116,7 +115,7 @@ const SignUp = ({navigation}) => {
       <View style={{marginTop: '75%', width: '90%', alignSelf: 'center'}}>
         <Text
           style={{
-            fontSize: 25,
+            fontSize: 20,
             color: 'white',
             fontWeight: '600',
             width: '75%',
@@ -133,7 +132,8 @@ const SignUp = ({navigation}) => {
             {errors.name}
           </Text>
         )}
-        <Input placeholder={'Email'} value={email} setText={setEmail} />
+        <Input placeholder={'Email'} 
+ value={email} setText={setEmail} />
         {errors.email && (
           <Text
             style={{
@@ -150,7 +150,7 @@ const SignUp = ({navigation}) => {
           onPress={() => setHidePassword(!hidepassword)}
           hidePass={hidepassword}
           icon={
-            <Entypo name={hidepassword ? 'eye-with-line' : 'eye'} size={20} />
+            <Entypo name={hidepassword ? 'eye-with-line' : 'eye'} size={20} color={"white"} />
           }
         />
         {errors.password && (
@@ -164,12 +164,14 @@ const SignUp = ({navigation}) => {
         )}
         <Input
           placeholder={'Confirm password'}
+
+
           value={confirmpassword}
           setText={setConfirmpassword}
           onPress={() => csetHidePassword(!chidepassword)}
           hidePass={chidepassword}
           icon={
-            <Entypo name={chidepassword ? 'eye-with-line' : 'eye'} size={20} />
+            <Entypo name={chidepassword ? 'eye-with-line' : 'eye'} size={20} color={"white"} />
           }
         />
         {errors.confirmPassword && (
@@ -187,29 +189,9 @@ const SignUp = ({navigation}) => {
           onPress={handleSubmit}
         />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          justifyContent: 'center',
-          alignItems: 'center',
-          marginTop: 15,
-          marginBottom:50
-        }}>
-        <Text style={{fontSize: 18, textAlign: 'center'}}>
-          Already have an Account?
-        </Text>
-        <TouchableOpacity
-          onPress={() => navigation.navigate('SignIn')}
-          style={{
-            borderRadius: 10,
-            paddingHorizontal: 5,
-          }}>
-          <Text style={{fontSize: 18}}>Login</Text>
-        </TouchableOpacity>
-      </View>
       <Image
         source={images.boy}
-        style={{marginTop: 140, marginLeft: 200, position: 'absolute'}}
+        style={{marginTop: 130, marginLeft: 180, position: 'absolute' , }}
       />
     </ScrollView>
   );
@@ -218,3 +200,4 @@ const SignUp = ({navigation}) => {
 export default SignUp;
 
 const styles = StyleSheet.create({});
+   

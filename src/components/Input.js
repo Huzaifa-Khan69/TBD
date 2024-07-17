@@ -30,6 +30,7 @@ const Input = ({placeholder, inputStyle, icon, onPress,hidePass,setText,value}) 
         secureTextEntry={hidePass ? true : false}
         onChangeText={setText}
         value={value}
+        placeholderTextColor="white"
       />
       <TouchableOpacity
         onPress={onPress}
